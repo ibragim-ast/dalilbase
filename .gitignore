@@ -40,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# certbot: сертификаты и приватные ключи, никогда не коммитятся
+/certbot/
