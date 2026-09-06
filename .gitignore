@@ -43,3 +43,5 @@ next-env.d.ts
 
 # certbot: сертификаты и приватные ключи, никогда не коммитятся
 /certbot/
+
+/src/generated/prisma

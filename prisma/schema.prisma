@@ -1,0 +1,170 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Category {
+  id Int @id @default(autoincrement())
+  slug String @unique
+  title String 
+  sortOrder Int
+  articles Article[]
+}
+
+model Tag {
+  id Int @id @default(autoincrement())
+  slug String @unique
+  title String 
+  articles ArticleTag[]
+}
+
+enum Role {
+  reader
+  moderator
+  stModerator
+  admin
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  email String @unique
+  passwordHash String
+  displayName String
+  role Role
+  karma Int @default(0)
+  rulesAcceptedAt DateTime? 
+  createdAt DateTime @default(now())
+  articles Article[]
+  comments Comment[]
+  userVotes CommentVote[]
+  userArticleVotes ArticleVote[]
+  userCommentReports CommentReport[]
+  userArticleReports ArticleReport[]
+}
+
+enum ArticleStatus {
+  draft
+  onReview
+  published
+  rejected
+}
+
+model Article {
+  id Int @id @default(autoincrement())
+  categoryId Int
+  category Category @relation(fields: [categoryId], references: [id])
+  authorId Int
+  author User @relation(fields: [authorId], references: [id])
+  status ArticleStatus @default(draft)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  slug String @unique
+  title String
+  shortAnswer String
+  fullAnswer String
+  counterArgument String?
+  moderationComment String?
+  publishedAt DateTime? 
+  tags ArticleTag[]
+  sources Source[]
+  comments Comment[]
+  articleVotes ArticleVote[]
+  articleReports ArticleReport[]
+}
+
+model ArticleTag {
+  articleId Int
+  article Article @relation(fields: [articleId], references: [id])
+  tagId Int 
+  tag Tag @relation(fields: [tagId], references: [id])
+
+  @@id([articleId, tagId])
+}
+
+enum SourceType {
+  ayah
+  hadith
+  scripture
+  scholarWork
+  scientificArticle
+}
+
+model Source {
+  id Int @id @default(autoincrement())
+  type SourceType
+  citation String
+  url String?
+  articleId Int
+  article Article @relation(fields: [articleId], references: [id])
+  sortOrder Int
+}
+
+enum ReportStatus {
+  none
+  reported
+  reviewed
+}
+
+model Comment {
+  id Int @id @default(autoincrement())
+  articleId Int
+  article Article @relation(fields: [articleId], references: [id])
+  authorId Int
+  author User @relation(fields: [authorId], references: [id])
+  text String
+  voteScore Int @default(0)
+  reportStatus ReportStatus @default(none)
+  createdAt DateTime @default(now())
+  commentVotes CommentVote[]
+  commentReports CommentReport[]
+}
+
+model CommentVote {
+  commentId Int 
+  comment Comment @relation(fields: [commentId], references: [id])
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+  value Int
+
+  @@id([commentId, userId])
+}
+
+model ArticleVote {
+  articleId Int 
+  article Article @relation(fields: [articleId], references: [id])
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+  value Int
+
+  @@id([articleId, userId])
+}
+
+model CommentReport {
+  id Int @id @default(autoincrement())
+  commentId Int
+  comment Comment @relation(fields: [commentId], references: [id])
+  reporterId Int 
+  reporter User @relation(fields: [reporterId], references: [id])
+  resolved Boolean @default(false)
+  resolution ReportResolution?
+}
+
+   enum ReportResolution {
+     hidden
+     dismissed
+   }
+
+model ArticleReport {
+  id Int @id @default(autoincrement())
+  articleId Int
+  article Article @relation(fields: [articleId], references: [id])
+  reporterId Int 
+  reporter User @relation(fields: [reporterId], references: [id])
+  resolved Boolean @default(false)
+  resolution ReportResolution?
+}
+
