@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: dalil
+      POSTGRES_PASSWORD: dev_password
+      POSTGRES_DB: dalil_dev
+    ports:
+      - '127.0.0.1:5433:5432'
+    volumes:
+      - dalil_dev_data:/var/lib/postgresql/data
+
+volumes:
+  dalil_dev_data:
