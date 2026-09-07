@@ -16,8 +16,9 @@
   --color-ink-soft: var(--ink-soft);
   --color-line: var(--line);
   --color-rubric: var(--rubric);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-source-serif);
+  --font-sans: var(--font-golos);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
 @media (prefers-color-scheme: dark) {
