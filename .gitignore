@@ -45,3 +45,4 @@ next-env.d.ts
 /certbot/
 
 /src/generated/prisma
+create-test-user.ts
